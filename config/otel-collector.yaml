@@ -1,0 +1,29 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+
+exporters:
+  debug:  # Simple logging exporter for validation
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+  zipkin:
+    endpoint: "http://zipkin:9411/api/v2/spans"
+  loki:
+    endpoint: "http://loki:3100/loki/api/v1/push"
+
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [zipkin]  # Replace logging with your desired backend
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus]  # Replace logging with your desired backend
+    logs:
+      receivers: [otlp]
+      exporters: [loki]  # Replace logging with your desired backend
